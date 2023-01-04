@@ -2,7 +2,7 @@ module Domain
 
 open System
 
-
+//Variables & Lists
 type Wertpapier(name: string, isin: string, value: int) =
     member x.Name = name
     member x.Isin = isin
@@ -12,38 +12,45 @@ type Wertpapier(name: string, isin: string, value: int) =
 
 let wertpapiere = 
     [
-        Wertpapier("Erste Bank", "AT0000652011", 120);
-        Wertpapier("Bank Austira", "AT000B044219", 60);
+        Wertpapier("ErsteBank", "AT0000652011", 120);
+        Wertpapier("ErsteBank", "AT0000652012", 120);
+        Wertpapier("BankAustria", "AT000B044219", 60);
         Wertpapier("Siemens", "DE0007236101.", 132);
-        Wertpapier("Alphabet Inc Class A", "US02079K3059", 82);    
+        Wertpapier("AlphabetIncClassA", "US02079K3059", 82);    
     ]
+    
 
-type depot = List<Wertpapier>
-type State = depot
-
+//State -> Wertpapier Depot    
+type State = List<Wertpapier>
 let init () : State =
     []
 
-
+// Message Pattern Matching
 type Message =
-//    | Increment
-//    | Decrement
-//    | IncrementBy of int
-//    | DecrementBy of int
+    | AddSecurity of string
+    | ShowMySecurities
+
+type Message2 =
     | SelectWertpapiere of string
- 
+    | ShowAllSecurities 
 
+//Functions
 let filterForSecurityByName = fun  x  (z: Wertpapier list) -> z |> List.filter ( fun y -> y.Name = x )
+let filterForSecurityByIsin = fun  x  (z: Wertpapier list) -> z |> List.filter ( fun y -> y.Isin = x )
 
+// let addSecurity x (y: Wertpapier list) (z: Wertpapier list) = 
+    
+
+
+//Delegates
 let update (msg : Message) (model : State) : State =
     match msg with
-//    | Increment -> model + 1
-//    | Decrement -> model - 1
-//    | IncrementBy x -> model + x
-//    | DecrementBy x -> model - x
+    | AddSecurity x  -> model @ filterForSecurityByIsin x wertpapiere
+    | ShowMySecurities -> model
+
+
+// Versuch --> Kein Update vom State, sondern nur Ausgabe einer Liste --> Info
+let information (msg : Message2) =
+    match msg with
     | SelectWertpapiere x -> filterForSecurityByName x wertpapiere
-
-
-//    | SelectWertpapiere x -> List.filter (fun isName -> isName = x)
-//    | SelectWertpapiere2 x: Wertpapier -> wertpapiere.find (fun y -> y.name = x.name)
-//    | SelectWertpapiere x: Wertpapier -> State2.find(fun x -> x = x)
+    | ShowAllSecurities -> wertpapiere
