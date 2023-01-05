@@ -6,5 +6,6 @@ let main argv =
     printf "> "
 
     let initialState = Domain.init ()
+    printfn "Your depot contains %A. The current market is %A."  initialState.depot initialState.market 
     Repl.loop initialState
     0 // return an integer exit code
