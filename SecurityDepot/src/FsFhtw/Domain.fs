@@ -73,11 +73,15 @@ let filterForSecurityByIsin = fun  x  (z: Wertpapier list) -> z |> List.filter (
 
 
 // let rec addToDepot x = x + x
-// let calculateDepotValue = fun (x: State) -> new State (x.depot, x.market,
+// let calculateDepotValue  = fun (x: State) -> new State (x.depot, x.market,
 //    addToDepot x.depot
 
 //let sum list:Wertpapier = List.sumBy (fun elem -> elem*elem)
 
+let rec calculateDepotValue x = 
+    match x with
+    | (head:Wertpapier) :: tail -> (head.Amount * head.Value + (calculateDepotValue tail))
+    | _ -> 0
 
 //let removeSecurityFromMarket = fun 
 
@@ -100,7 +104,7 @@ let update (msg : Message) (model : State) : State =
     | ShowAllSecurities -> model
     | SellSecurityFromDepot (x: string, y) -> model
     | AddSecurityToMarket (name, typ, isin, value, amount) -> model
-//    | CalculateDepotValue -> calculateDepotValue model
+    | CalculateDepotValue -> new State(model.depot, model.market, calculateDepotValue model.depot)
     
     // addSecurityToDepot X X (ISIN, Amount) |> DecrementBy x for model.market  |> filterForSecurityByISIN List<Wertpapier> |> IncrementBy x model.depot
     // addSecurityToMarket X:Wertpapier 
