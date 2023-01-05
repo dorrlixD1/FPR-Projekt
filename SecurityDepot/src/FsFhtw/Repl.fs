@@ -4,7 +4,8 @@ open System
 open Parser
 
 type Message =
-    | DomainMessage of Domain.Message
+    | MarketMessage of Domain.Message
+    | DepotMessage of Domain.Message
     | HelpRequested
     | NotParsable of string
 
@@ -12,10 +13,13 @@ type State = Domain.State
 
 let read (input : string) =
     match input with
-    | SelectWertpapiere (v: string) -> Domain.SelectWertpapiere v |> DomainMessage
-    | ShowAllSecurities -> Domain.ShowAllSecurities |> DomainMessage
-    | AddSecurity (v: string) -> Domain.AddSecurity v |> DomainMessage
-    | ShowMySecurities -> Domain.ShowMySecurities |> DomainMessage
+    | SelectSecurities (v: string) -> Domain.SelectSecurities v |> MarketMessage
+    | ShowAllSecurities -> Domain.ShowAllSecurities |> MarketMessage
+    | SellSecurityFromDepot v -> Domain.SellSecurityFromDepot v |> DepotMessage
+    | AddSecurityToDepot v -> Domain.AddSecurityToDepot v |> DepotMessage
+    | AddSecurityToMarket v -> Domain.AddSecurityToMarket v |> DepotMessage
+    | ShowMySecurities -> Domain.ShowMySecurities |> DepotMessage
+    | CalculateDepotValue -> Domain.CalculateDepotValue |> DepotMessage
     | Help -> HelpRequested
     | ParseFailed  -> NotParsable input
 
@@ -28,11 +32,15 @@ let createHelpText () : string =
     |> (fun s -> s.Trim() |> sprintf "Known commands are: %s")
 
 
-let evaluate (update : Domain.Message -> State -> State)  (state : State) (msg : Message) =
+let evaluate (update : Domain.Message -> State -> State) (state : State) (msg : Message) =
     match msg with
-    | DomainMessage msg ->
+    | MarketMessage msg ->
         let newState: State = update msg state 
-        let message: string = sprintf "The operation used was %A. Your depot contains %A. The current market is %A. %A" msg newState.depot newState.market newState
+        let message: string = sprintf "%A executed. \n\nThe current market is: \n %A" msg newState.market 
+        (newState, message)
+    | DepotMessage msg ->
+        let newState: State = update msg state 
+        let message: string = sprintf "%A executed. \n\nYour depot contains: \n %A" msg newState.depot
         (newState, message)
     | HelpRequested ->
         let message = createHelpText ()

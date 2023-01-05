@@ -5,6 +5,6 @@
     "\\SecurityDepot\\src",
     "\\SecurityDepot\\src\\FsFhtw"
   ],
-  "SelectedNode": "\\SecurityDepot\\FsFhtw.sln",
+  "SelectedNode": "\\SecurityDepot\\src\\FsFhtw\\Program.fs",
   "PreviewInSolutionExplorer": false
 }
