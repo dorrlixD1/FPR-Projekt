@@ -46,18 +46,14 @@ let (|ParseFailed|AddSecurityToMarket|CalculateDepotValue|) (input : string) =
     let parts = input.Split(' ') |> List.ofArray
     match parts with    
     | [ verb ] when safeEquals verb (nameof Domain.CalculateDepotValue) -> CalculateDepotValue
-    | [ verb; arg ; arg2 ; arg3, arg4, arg5] when safeEquals verb (nameof Domain.AddSecurityToMarket) -> 
-        AddSecurityToMarket (arg,
-        //arg2,arg3,arg4,arg5)
-            arg, 
-            tryParseWertpapierTyp arg2 (fun value -> value), 
-            arg3, 
-            tryParseInt arg4 (fun value -> value), 
-            tryParseInt arg5 (fun value -> value))
+    | [ verb; arg ; arg2 ; arg3; arg4; arg5] when safeEquals verb (nameof Domain.AddSecurityToMarket) -> 
+        AddSecurityToMarket (arg,arg2,arg3,
+            arg4 |> int , 
+            arg5 |> int )
     | _ -> ParseFailed
 
 
-    
+  
  //   let converted = Domain.WertpapierTyp input
  //   let tryParseWertpapierTyp (arg : string) valueConstructor =  
 //	let (worked, arg') =

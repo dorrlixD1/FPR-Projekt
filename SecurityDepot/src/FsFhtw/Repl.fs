@@ -3,6 +3,8 @@ module Repl
 open System
 open Parser
 
+let header = " Name                     | Typ | ISIN           | Wert    | Menge "
+
 type Message =
     | MarketMessage of Domain.Message
     | DepotMessage of Domain.Message
@@ -36,7 +38,7 @@ let evaluate (update : Domain.Message -> State -> State) (state : State) (msg : 
     match msg with
     | MarketMessage msg ->
         let newState: State = update msg state 
-        let message: string = sprintf "%A executed. \n\nThe current market is: \n %A" msg newState.market 
+        let message: string = sprintf "%A executed. \n\nThe current market is: \n %A \n %A" msg header newState.market 
         (newState, message)
     | DepotMessage msg ->
         let newState: State = update msg state 
