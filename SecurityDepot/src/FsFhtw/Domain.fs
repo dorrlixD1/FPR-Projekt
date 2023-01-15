@@ -19,7 +19,7 @@ type Wertpapier(name: string, typ: WertpapierTyp,  isin: string, value: int, amo
     member x.Value = value
     member x.Amount = amount
     override x.ToString() =
-        sprintf "(Name: %s, Typ: %A, ISIN: %s, Value: %d, Amount: %d)" name typ isin value amount 
+        sprintf "%-30s %-10A %-14s %-8d %-7d" name typ isin value amount 
 
 // Message Pattern Matching
 
