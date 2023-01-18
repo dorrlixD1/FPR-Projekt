@@ -2,7 +2,7 @@ module Domain
 
 open System
 
-// Domainspecific Declaration
+// Domainspecific Declarations
 type WertpapierTyp =
     | Aktie
     | Anleihen
