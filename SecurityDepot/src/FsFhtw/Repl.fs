@@ -8,6 +8,7 @@ let header = " Name                         | Typ      | ISIN         | Wert   |
 type Message =
     | MarketMessage of Domain.Message
     | DepotMessage of Domain.Message
+    | CalculateMessage of Domain.Message
     | HelpRequested
     | NotParsable of string
 
@@ -21,7 +22,7 @@ let read (input : string) =
     | AddSecurityToDepot v -> Domain.AddSecurityToDepot v |> DepotMessage
     | AddSecurityToMarket v -> Domain.AddSecurityToMarket v |> DepotMessage
     | ShowMySecurities -> Domain.ShowMySecurities |> DepotMessage
-    | CalculateDepotValue -> Domain.CalculateDepotValue |> DepotMessage
+    | CalculateDepotValue -> Domain.CalculateDepotValue |> CalculateMessage
     | Help -> HelpRequested
     | ParseFailed  -> NotParsable input
 
@@ -43,6 +44,10 @@ let evaluate (update : Domain.Message -> State -> State) (state : State) (msg : 
     | DepotMessage msg ->
         let newState: State = update msg state 
         let message: string = sprintf "%A executed. \n\nYour depot contains: \n %A" msg newState.depot
+        (newState, message)
+    | CalculateMessage msg ->
+        let newState: State = update msg state 
+        let message: string = sprintf "%A executed. \n\nDepot Value: \n %A" msg newState.depotvalue
         (newState, message)
     | HelpRequested ->
         let message = createHelpText ()

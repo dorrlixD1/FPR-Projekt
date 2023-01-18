@@ -92,6 +92,20 @@ let rec calculateDepotValue x =
 // let addSecurity x (y: Wertpapier list) (z: Wertpapier list) = 
 
 // type addSecuritytoDepot = 
+let tryParseWertpapierTyp (x: string) = 
+        match x with
+        | "Aktie" -> Aktie
+        | "Anleihen" -> Anleihen
+        | "Zertifikate" -> Zertifikate
+        | "Fond" -> Fond
+        | "ETF" -> ETF
+        | "" -> None
+        | _ -> None
+
+let addSecurityToMarket  =
+    fun name typ isin value amount  market ->
+        new Wertpapier(name,tryParseWertpapierTyp typ,isin,value,amount) :: market
+    
 
 
 //Delegates
@@ -99,12 +113,12 @@ let update (msg : Message) (model : State) : State =
     match msg with
 //    | AddSecurityToDepot x  -> new State(model.depot @ filterForSecurityByIsin x model.market,model.market)
     | AddSecurityToDepot (x: string, y: int) -> model
-    | ShowMySecurities -> model
+    | ShowMySecurities -> model //Working
     | SelectSecurities x -> new State (model.depot, filterForSecurityByName x model.market, model.depotvalue)
-    | ShowAllSecurities -> model
+    | ShowAllSecurities -> model //Working
     | SellSecurityFromDepot (x: string, y) -> model
-    | AddSecurityToMarket (name, typ, isin, value, amount) -> model
-    | CalculateDepotValue -> new State(model.depot, model.market, calculateDepotValue model.depot)
+    | AddSecurityToMarket (name, typ, isin, value, amount) -> new State(model.depot, addSecurityToMarket name typ isin value amount model.market, model.depotvalue)
+    | CalculateDepotValue -> new State(model.depot, model.market, calculateDepotValue model.depot) //Working
     
     // addSecurityToDepot X X (ISIN, Amount) |> DecrementBy x for model.market  |> filterForSecurityByISIN List<Wertpapier> |> IncrementBy x model.depot
     // addSecurityToMarket X:Wertpapier 
