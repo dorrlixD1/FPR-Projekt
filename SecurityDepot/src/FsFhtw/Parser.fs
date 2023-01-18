@@ -10,7 +10,7 @@ let safeEquals (it : string) (theOther : string) =
 let HelpLabel = "Help"
 
 //|Increment|Decrement|IncrementBy|DecrementBy|
-let (|Help|ParseFailed|SelectSecurities|AddSecurityToDepot|ShowAllSecurities|ShowMySecurities|SellSecurityFromDepot|) (input : string) =
+let (|Help|ParseFailed|SelectSecurities|ShowAllSecurities|ShowMySecurities|SellSecurityFromDepot|) (input : string) =
     let tryParseInt (arg2 : string) valueConstructor =
         let (worked, arg2') = Int32.TryParse arg2
         if worked then valueConstructor arg2' else ParseFailed
@@ -20,15 +20,13 @@ let (|Help|ParseFailed|SelectSecurities|AddSecurityToDepot|ShowAllSecurities|Sho
     | [ verb; arg ] when safeEquals verb (nameof Domain.SelectSecurities) -> SelectSecurities arg
     | [ verb ] when safeEquals verb (nameof Domain.ShowAllSecurities) -> ShowAllSecurities
     | [ verb ] when safeEquals verb (nameof Domain.ShowMySecurities) -> ShowMySecurities
-    | [ verb; arg: string ; arg2: string] when safeEquals verb (nameof Domain.AddSecurityToDepot) ->
-        tryParseInt arg2 (fun value -> AddSecurityToDepot (arg, value))
     | [ verb; arg ; arg2] when safeEquals verb (nameof Domain.SellSecurityFromDepot) -> 
         tryParseInt arg2 (fun value -> SellSecurityFromDepot (arg, value))
     | [ verb ] when safeEquals verb HelpLabel -> Help
     | _ -> ParseFailed
 
 
-let (|ParseFailed|AddSecurityToMarket|CalculateDepotValue|) (input : string) =
+let (|ParseFailed|AddSecurityToMarket|CalculateDepotValue|AddSecurityToDepot|) (input : string) =
     let tryParseInt (arg : string) valueConstructor =
         let (worked, arg') = Int32.TryParse arg
         if worked then valueConstructor arg' else ParseFailed
@@ -49,7 +47,9 @@ let (|ParseFailed|AddSecurityToMarket|CalculateDepotValue|) (input : string) =
     | [ verb; arg ; arg2 ; arg3; arg4; arg5] when safeEquals verb (nameof Domain.AddSecurityToMarket) -> 
         AddSecurityToMarket (arg,arg2,arg3,
             arg4 |> int , 
-            arg5 |> int )
+            arg5 |> int )    
+    | [ verb; arg ; arg2 ] when safeEquals verb (nameof Domain.AddSecurityToDepot) -> 
+        AddSecurityToDepot (arg, arg2 |> int )
     | _ -> ParseFailed
 
 
