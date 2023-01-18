@@ -76,7 +76,6 @@ let rec calculateDepotValue x =
     | (head:Wertpapier) :: tail -> (head.Amount * head.Value + (calculateDepotValue tail))
     | _ -> 0
 
-//let removeSecurityFromMarket = fun 
 // let sellSecurity =  // Wildcard Search bei SelectSecurity offen 
 
 let tryParseWertpapierTyp (x: string) = 
@@ -116,19 +115,14 @@ let addSecurityToDepot  =
 //Delegates
 let update (msg : Message) (model : State) : State =
     match msg with
-//    | AddSecurityToDepot x  -> new State(model.depot @ filterForSecurityByIsin x model.market,model.market)
     | ShowMySecurities -> model //Working
     | SelectSecurities x -> new State (model.depot, filterForSecurityByName x model.market, model.depotvalue)
     | ShowAllSecurities -> model //Working
-    | SellSecurityFromDepot (x: string, y) -> model
-    | AddSecurityToMarket (name, typ, isin, value, amount) -> new State(model.depot, addSecurityToMarket name typ isin value amount model.market, model.depotvalue)
-    | AddSecurityToDepot (isin, amount) -> addSecurityToDepot isin amount model
-    | CalculateDepotValue -> new State(model.depot, model.market, calculateDepotValue model.depot) //Working
-    
-    // addSecurityToDepot X X (ISIN, Amount) |> DecrementBy x for model.market  |> filterForSecurityByISIN List<Wertpapier> |> IncrementBy x model.depot
-    // addSecurityToMarket X:Wertpapier 
-    // CalculateDepotValue |> sumAmount (List<Wertpapier>)
-    // SellSecurityFromDepot X X (ISIN, Amount) |> DecrementBy x for model.market  |> filterForSecurityByISIN List<Wertpapier> |> IncrementBy x model.depot
-    // SelectSecurities x // wildcard search
+    | SellSecurityFromDepot (x: string, y) -> model //TODO    
+    // SellSecurityFromDepot X X (ISIN, Amount) |> DecrementBy x for model.market  |> filterForSecurityByISIN List<Wertpapier> |> IncrementBy x model.depot 
+    | AddSecurityToMarket (name, typ, isin, value, amount) -> new State(model.depot, addSecurityToMarket name typ isin value amount model.market, model.depotvalue) //Working prob. needs Testing
+    | AddSecurityToDepot (isin, amount) -> addSecurityToDepot isin amount model //WORKING - SUB TODOs
+    | CalculateDepotValue -> new State(model.depot, model.market, calculateDepotValue model.depot) //Working    
+   // SelectSecurities x // wildcard search
 
     

@@ -9,7 +9,6 @@ let safeEquals (it : string) (theOther : string) =
 [<Literal>]
 let HelpLabel = "Help"
 
-//|Increment|Decrement|IncrementBy|DecrementBy|
 let (|Help|ParseFailed|SelectSecurities|ShowAllSecurities|ShowMySecurities|SellSecurityFromDepot|) (input : string) =
     let tryParseInt (arg2 : string) valueConstructor =
         let (worked, arg2') = Int32.TryParse arg2
@@ -51,13 +50,3 @@ let (|ParseFailed|AddSecurityToMarket|CalculateDepotValue|AddSecurityToDepot|) (
     | [ verb; arg ; arg2 ] when safeEquals verb (nameof Domain.AddSecurityToDepot) -> 
         AddSecurityToDepot (arg, arg2 |> int )
     | _ -> ParseFailed
-
-
-  
- //   let converted = Domain.WertpapierTyp input
- //   let tryParseWertpapierTyp (arg : string) valueConstructor =  
-//	let (worked, arg') =
- //            match arg' with
- //            | :? msg as WertpapierTyp 
-   //          | ParseFailed    
-      
