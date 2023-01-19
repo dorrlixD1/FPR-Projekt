@@ -43,7 +43,7 @@ let evaluate (update : Domain.Message -> State -> State) (state : State) (msg : 
         (newState, message)
     | DepotMessage msg ->
         let newState: State = update msg state 
-        let message: string = sprintf "%A executed. \n\nYour depot contains: \n %A" msg newState.depot
+        let message: string = sprintf "%A executed. \n\nYour depot contains: \n %s \n %A" msg header newState.depot
         (newState, message)
     | CalculateMessage msg ->
         let newState: State = update msg state 
