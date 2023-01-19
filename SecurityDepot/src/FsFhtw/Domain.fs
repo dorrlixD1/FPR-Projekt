@@ -120,9 +120,8 @@ let addSecurityToDepot (state : State) (isin : string) (amount : int)=
     else
         new State(state.depot, state.market , state.depotvalue) 
 
-// done
-let sellSecurityFromDepot (depot : Wertpapier list) (isin : String) (amount : int) =
-    let rec sellSecurityFromDepot depot depot' =
+let decrementSecurityFromDepot (depot : Wertpapier list) (isin : String) (amount : int) =
+    let rec decrementSecurityFromDepot depot depot' =
         match depot with
         | [] -> depot'
         | (head:Wertpapier) :: tail -> if head.Isin.Equals(isin) then
@@ -131,17 +130,23 @@ let sellSecurityFromDepot (depot : Wertpapier list) (isin : String) (amount : in
                                                             else
                                                                 depot' @ tail // remove the element
                                                         else
-                                                            sellSecurityFromDepot tail (depot' @ [head]) // keep seachring
-    sellSecurityFromDepot depot []
+                                                            decrementSecurityFromDepot tail (depot' @ [head]) // keep seachring
+    decrementSecurityFromDepot depot []
+
+let sellSecurityFromDepot (state : State) (isin : string) (amount : int)=
+    if (state.depot |> List.exists(fun(x) -> x.Isin.Equals(isin) && x.Amount >= amount)) then
+        new State( decrementSecurityFromDepot state.depot isin amount, incrementAmountofSecurity state.market isin amount, state.depotvalue) 
+    else
+        new State(state.depot, state.market , state.depotvalue) 
     
 let update (msg : Message) (model : State) : State =
     match msg with
     | ShowMySecurities -> model // Done
     | SelectSecurities isin -> new State (model.depot, filterForSecurityByName isin model.market, model.depotvalue) // Done
     | ShowAllSecurities -> model // Done
-    | SellSecurityFromDepot (isin, amount) -> new State(sellSecurityFromDepot model.depot isin amount ,  model.market , model.depotvalue) // Done
+    | SellSecurityFromDepot (isin, amount) -> sellSecurityFromDepot model isin amount// Done
     | AddSecurityToMarket (name, typ, isin, value, amount) -> new State(model.depot, addSecurityToMarket name typ isin value amount model.market, model.depotvalue) //Working prob. needs Testing
-    | AddSecurityToDepot (isin, amount) -> addSecurityToDepot model isin amount
+    | AddSecurityToDepot (isin, amount) -> addSecurityToDepot model isin amount // Done
     | CalculateDepotValue -> new State(model.depot, model.market, calculateDepotValue model.depot) //Done    
 
     
