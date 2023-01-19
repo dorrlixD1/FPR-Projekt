@@ -9,14 +9,13 @@ let safeEquals (it : string) (theOther : string) =
 [<Literal>]
 let HelpLabel = "Help"
 
-let (|Help|ParseFailed|SelectSecurities|ShowAllSecurities|ShowMySecurities|SellSecurityFromDepot|) (input : string) =
+let (|Help|ParseFailed|ShowAllSecurities|ShowMySecurities|SellSecurityFromDepot|) (input : string) =
     let tryParseInt (arg2 : string) valueConstructor =
         let (worked, arg2') = Int32.TryParse arg2
         if worked then valueConstructor arg2' else ParseFailed
 
     let parts = input.Split(' ') |> List.ofArray
-    match parts with    
-    | [ verb; arg ] when safeEquals verb (nameof Domain.SelectSecurities) -> SelectSecurities arg
+    match parts with   
     | [ verb ] when safeEquals verb (nameof Domain.ShowAllSecurities) -> ShowAllSecurities
     | [ verb ] when safeEquals verb (nameof Domain.ShowMySecurities) -> ShowMySecurities
     | [ verb; arg ; arg2] when safeEquals verb (nameof Domain.SellSecurityFromDepot) -> 

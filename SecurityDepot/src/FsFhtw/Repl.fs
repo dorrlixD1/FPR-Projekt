@@ -16,7 +16,6 @@ type State = Domain.State
 
 let read (input : string) =
     match input with
-    | SelectSecurities (v: string) -> Domain.SelectSecurities v |> MarketMessage
     | ShowAllSecurities -> Domain.ShowAllSecurities |> MarketMessage
     | SellSecurityFromDepot v -> Domain.SellSecurityFromDepot v |> DepotMessage
     | AddSecurityToDepot v -> Domain.AddSecurityToDepot v |> DepotMessage
